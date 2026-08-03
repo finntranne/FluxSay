@@ -4,7 +4,7 @@ import generateToken from "../utils/generateToken.js";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { ENV } from "../utils/env.js";
 
-const signUp = async (req, res) => {
+const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
     //check required fields
@@ -58,4 +58,37 @@ const signUp = async (req, res) => {
   }
 };
 
-export default { signUp };
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    generateToken(user._id, res);
+
+    res.status(200).json({
+      _id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.log("Error in login controller:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const logout = async (req, res) => {
+  res.cookie("jwt", "", { maxAge: 0 });
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+export { signup, login, logout };
