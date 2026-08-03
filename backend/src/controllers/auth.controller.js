@@ -1,6 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
+import { sendWelcomeEmail } from "../emails/emailHandlers.js";
+import { ENV } from "../utils/env.js";
+
 const signUp = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
@@ -42,6 +45,13 @@ const signUp = async (req, res) => {
       email: newUser.email,
       profilePic: newUser.profilePic,
     });
+
+    //send welcome email
+    try {
+      await sendWelcomeEmail(newUser.email, newUser.fullName, ENV.CLIENT_URL);
+    } catch (error) {
+      console.log("Failed to send welcome email:", error);
+    }
   } catch (error) {
     console.log("Error in signup", error);
     res.status(500).json({ message: "internal server error" });
