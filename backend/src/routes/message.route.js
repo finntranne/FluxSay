@@ -1,9 +1,19 @@
-import express from 'express'
-
+import express from "express";
+import { protectRoute } from "../middleware/auth.middleware.js";
+import {
+  getAllContacts,
+  getMessagesByUserid,
+  sendMessage,
+  getChatPartners,
+} from "../controllers/message.controller.js";
+import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 const router = express.Router();
 
-router.get('/send', (req, res) => {
-    res.send('send message endpoint')
-})
+router.use(arcjetProtection, protectRoute);
 
-export default router
+router.get("/users", getAllContacts);
+router.get("/conservation", getChatPartners);
+router.get("/:id", getMessagesByUserid);
+router.post("/:id", sendMessage);
+
+export default router;
