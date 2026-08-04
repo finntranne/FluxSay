@@ -2,7 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import path from "path";
-import { ENV } from "./utils/env.js";
+import { ENV } from "./config/env.js";
 import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 
