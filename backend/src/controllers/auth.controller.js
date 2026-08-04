@@ -2,7 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
-import { ENV } from "../utils/env.js";
+import { ENV } from "../config/env.js";
+import cloudinary from "../lib/cloudinary.js";
 
 const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
@@ -91,4 +92,30 @@ const logout = async (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-export { signup, login, logout };
+const updateProfile = async (req, res) => {
+  try {
+    const { profilePic } = req.body;
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile picture is required" });
+    }
+
+    const userId = req.user._id;
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const imageUrl = uploadResponse.secure_url;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        profilePic: imageUrl,
+      },
+      { new: true },
+    );
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in update profile: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export { signup, login, logout, updateProfile };

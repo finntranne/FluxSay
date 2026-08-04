@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
+import cookieParser from "cookie-parser";
 import path from "path";
 import { ENV } from "./config/env.js";
 import { fileURLToPath } from "url";
@@ -11,6 +12,7 @@ const app = express();
 const PORT = ENV.PORT || 3000;
 
 app.use(express.json()); //req.body
+app.use(cookieParser());
 
 // Cấu hình __dirname chuẩn cho ES Modules
 const __filename = fileURLToPath(import.meta.url);

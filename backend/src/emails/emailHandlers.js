@@ -1,4 +1,4 @@
-import { resendClient, sender } from "../utils/resend.js";
+import { resendClient, sender } from "../lib/resend.js";
 import { createWelcomeEmailTemplate } from "./emailTemplates.js";
 
 const sendWelcomeEmail = async (email, name, clientURL) => {
