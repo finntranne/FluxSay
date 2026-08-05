@@ -6,12 +6,14 @@ import path from "path";
 import { ENV } from "./config/env.js";
 import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
+import cors from "cors";
 
 const app = express();
 
 const PORT = ENV.PORT || 3000;
 
 app.use(express.json()); //req.body
+app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 
 // Cấu hình __dirname chuẩn cho ES Modules
