@@ -17,16 +17,17 @@ app.use(cookieParser());
 // Cấu hình __dirname chuẩn cho ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const frontendDistPath = path.resolve(__dirname, "../../frontend/dist");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 // Ready for deployment
 if (ENV.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.use(express.static(frontendDistPath));
 
-  app.get(/^\/(.*)/, (req, res) => {
-    res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(frontendDistPath, "index.html"));
   });
 }
 
