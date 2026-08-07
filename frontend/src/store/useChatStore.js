@@ -10,11 +10,11 @@ const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUserLoading: false,
   isMessagesLoading: false,
-  isSoundEnable: localStorage.getItem("isSoundEnable") === true,
+  isSoundEnabled: localStorage.getItem("isSoundEnabled") === true,
 
   toggleSound: () => {
-    localStorage.setItem("isSoundEnable", !get().isSoundEnable);
-    set({ isSoundEnable: !get().isSoundEnable });
+    localStorage.setItem("isSoundEnabled", !get().isSoundEnabled);
+    set({ isSoundEnabled: !get().isSoundEnabled });
   },
 
   setActiveTab: (tab) => set({ activeTab: tab }),
@@ -34,8 +34,8 @@ const useChatStore = create((set, get) => ({
   getMyChatPartners: async () => {
     set({ isUserLoading: true });
     try {
-      const res = await axiosInstance.get("messages/conservation");
-      set({ allContacts: res.data });
+      const res = await axiosInstance.get("messages/conversations");
+      set({ chats: res.data });
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {

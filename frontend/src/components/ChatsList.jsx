@@ -2,41 +2,46 @@ import { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
+import NoChatsFound from "./NoChatsFound";
 
-function ContactList() {
-  const allContacts = useChatStore((state) => state.allContacts);
+function ChatsList() {
+  const getMyChatPartners = useChatStore((state) => state.getMyChatPartners);
+  const chats = useChatStore((state) => state.chats);
   const isUsersLoading = useChatStore((state) => state.isUserLoading);
   const setSelectedUser = useChatStore((state) => state.setSelectedUser);
-  const getAllContacts = useChatStore((state) => state.getAllContact);
   const onlineUsers = useAuthStore((state) => state.onlineUsers);
 
   useEffect(() => {
-    getAllContacts();
-  }, [getAllContacts]);
+    getMyChatPartners();
+  }, [getMyChatPartners]);
 
   if (isUsersLoading) return <UsersLoadingSkeleton />;
+  if (chats.length === 0) return <NoChatsFound />;
 
   return (
     <>
-      {allContacts.map((contact) => (
+      {chats.map((chat) => (
         <div
-          key={contact._id}
+          key={chat._id}
           className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
-          onClick={() => setSelectedUser(contact)}
+          onClick={() => setSelectedUser(chat)}
         >
           <div className="flex items-center gap-3">
-            <div
-              className={`avatar ${onlineUsers.includes(contact._id) ? "avatar-online" : "avatar-offline"}`}
-            >
+            <div className={`avatar avatar-online`}>
               <div className="size-12 rounded-full">
-                <img src={contact.profilePic || "/avatar.png"} />
+                <img
+                  src={chat.profilePic || "/avatar.png"}
+                  alt={chat.fullName}
+                />
               </div>
             </div>
-            <h4 className="text-slate-200 font-medium">{contact.fullName}</h4>
+            <h4 className="text-slate-200 font-medium truncate">
+              {chat.fullName}
+            </h4>
           </div>
         </div>
       ))}
     </>
   );
 }
-export default ContactList;
+export default ChatsList;

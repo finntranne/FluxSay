@@ -9,10 +9,10 @@ import {
 import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 const router = express.Router();
 
-router.use(arcjetProtection, protectRoute);
+router.use(protectRoute);
 
 router.get("/users", getAllContacts);
-router.get("/conservation", getChatPartners);
+router.get("/conversations", getChatPartners);
 router.get("/:id", getMessagesByUserid);
 router.post("/:id", sendMessage);
 
